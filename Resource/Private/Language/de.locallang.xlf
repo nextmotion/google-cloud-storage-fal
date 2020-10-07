@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2020-10-07T22:46:00Z"
+          product-name="google_cloud_storage_fal">
+        <header/>
+        <body>
+            <trans-unit id="driverConfiguration.authentication">
+                <source>Authentifizierung</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.authenticationType.label">
+                <source>Authentifizierungsart</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.select.privateKeyJsonPathAndFileName">
+                <source>Pfad zum Private Key (json)</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.select.privateKeyJson">
+                <source>Private Key</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.keyFilePath.label">
+                <source>Pfad zur Datei ausgehend vom Projektwurzelverzeichniss</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.keyFileContent.label">
+                <source>Privater Schlüssel als Json</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.bucketName.label">
+                <source>Bucket name</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.publicBaseUri.label">
+                <source>Öffentliche Basis-URL (mit Slash am Ende)</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

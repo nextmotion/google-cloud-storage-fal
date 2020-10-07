@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Nextmotion\GoogleCloudStorageDriver\:
+    resource: '../Classes/*'
+
+  Nextmotion\GoogleCloudStorageDriver\EventListener\GeneratePublicUrlForResourceListener:
+    tags:
+      - name: event.listener
+        identifier: 'nextmotionGoogleCloudStorageGeneratePublicUrlForResourceListener'
+        event: TYPO3\CMS\Core\Resource\Event\GeneratePublicUrlForResourceEvent

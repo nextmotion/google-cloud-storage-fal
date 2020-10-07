@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2020-10-07T22:46:00Z"
+          product-name="google_cloud_storage_fal">
+        <header/>
+        <body>
+            <trans-unit id="driverConfiguration.authentication">
+                <source>Authentication</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.authenticationType.label">
+                <source>Authentication type</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.select.privateKeyJsonPathAndFileName">
+                <source>Path to private key (json)</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.select.privateKeyJson">
+                <source>Private key</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.keyFilePath.label">
+                <source>Path and filename to JSON related to TYPO3 root (e.g. /conf/gcp.json)</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.keyFileContent.label">
+                <source>Private key as json</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.bucketName.label">
+                <source>Bucket name</source>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.publicBaseUri.label">
+                <source>Public base URL (with trailing slash)</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

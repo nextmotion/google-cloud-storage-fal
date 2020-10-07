@@ -1,0 +1,39 @@
+{
+  "name": "nextmotion/google_cloud_storage_fal",
+  "description": "Google Cloud Storage FAL driver for TYPO3",
+  "homepage": "http://github.com/nextmotion/google_cloud_storage_fal",
+  "license": "GPL-2.0-or-later",
+  "support": {
+    "issues": "https://github.com/nextmotion/google_cloud_storage_fal/issues"
+  },
+  "keywords": [
+    "TYPO3",
+    "FAL",
+    "Driver",
+    "FileAbstractionLayer",
+    "Google Cloud Storage",
+    "Google Cloud Platform",
+    "GCP",
+    "GCS",
+    "Bucket"
+  ],
+  "authors": [
+    {
+      "name": "Pierre Geyer",
+      "email": "pg@next-motion.de",
+      "role": "Developer",
+      "homepage": "https://www.next-motion.de"
+    }
+  ],
+  "type": "typo3-cms-extension",
+  "require": {
+    "php": "^7.1",
+    "typo3/cms-core": ">=10.4 <10.9.99",
+    "google/cloud-storage": "^v1.23"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nextmotion\\GoogleCloudStorageDriver\\": "Classes"
+    }
+  }
+}
