@@ -100,7 +100,8 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
             $this->keyFilePath = $this->configuration['keyFilePath'];
         }
         if ($this->configuration['authenticationType'] == 'keyFileContent') {
-            $this->keyFileContent = json_decode($this->configuration['keyFileContent'], true);
+            $this->keyFileContent = $this->configuration['keyFileContent'] ?
+                json_decode($this->configuration['keyFileContent'], true) : "";
         }
         $this->bucketName = $this->configuration['bucketName'];
         $this->publicBaseUri = $this->configuration['publicBaseUri'];
@@ -269,6 +270,14 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isWithin($folderIdentifier, $identifier)
+    {
+        return GeneralUtility::isFirstPartOfStr($identifier, $folderIdentifier);
+    }
+
+    /**
      * Moves a file or folder to the given directory, renaming the source in the process if
      * a file or folder of the same name already exists in the target path.
      *
@@ -292,14 +301,6 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
             $result = $this->moveFileWithinStorage($filePath, $recycleDirectory, $destinationBasename);
         }
         return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isWithin($folderIdentifier, $identifier)
-    {
-        return GeneralUtility::isFirstPartOfStr($identifier, $folderIdentifier);
     }
 
     /**
