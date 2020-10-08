@@ -28,6 +28,7 @@
                                         <numIndex index="1">keyFileContent</numIndex>
                                     </numIndex>
                                 </items>
+                                <default>keyFilePath</default>
                             </config>
                         </TCEforms>
                     </authenticationType>
