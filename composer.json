@@ -1,10 +1,10 @@
 {
-  "name": "nextmotion/google_cloud_storage_fal",
+  "name": "nextmotion/google-cloud-storage-fal",
   "description": "Google Cloud Storage FAL driver for TYPO3",
-  "homepage": "http://github.com/nextmotion/google_cloud_storage_fal",
+  "homepage": "http://github.com/nextmotion/google-cloud-storage-fal",
   "license": "GPL-2.0-or-later",
   "support": {
-    "issues": "https://github.com/nextmotion/google_cloud_storage_fal/issues"
+    "issues": "https://github.com/nextmotion/google-cloud-storage-fal/issues"
   },
   "keywords": [
     "TYPO3",
