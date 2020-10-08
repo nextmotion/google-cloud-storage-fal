@@ -29,6 +29,46 @@ composer require nextmotion/google_cloud_storage_fal
 
 First of all you have to create a bucket on google cloud platform. Second you have to create a private/public key to access the bucket. This driver only supports accesses on a uniform bucket level. 
 
+### CORS Header
+
+To use the TYPO3 crop editor, the CORS headers of the bucket must be configured.
+
+Create a file CORS.json and modify to your needs:  
+```
+[
+    {
+      "origin": ["*"],
+      "method": ["GET", "POST", "OPTIONS", "HEAD"],
+      "responseHeader": ["Authorization", "Origin", "X-Requested-With", "Content-Type", "Accept"],
+      "maxAgeSeconds": 3600
+    }
+]
+```
+
+***Warning***: `"origin": ["*"]` means wide open configuration. It's more secure to define your domains e.g. 
+`"origin": ["subdomain.domain.tld", "local.dev" ... ] `
+
+
+Use the command `gsutil cors` to configure CORS in a bucket:
+```
+# Log-in into your account.
+gcloud auth login [MY_ACCOUNT]
+
+# List your projects
+gcloud projects list
+
+# Choose project
+gcloud config set project [PROJECT_NAME]
+
+# List your buckets
+gsutil ls
+
+# Update CORS of your bucket
+gsutil cors set CORS.json gs://[BUCKET_NAME]
+```
+
+If you want to remove CORS, see: https://cloud.google.com/storage/docs/configuring-cors#remove-cors-bucket
+
 ## TYPO3 Configuration
 
 First create a [file storage](https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/Fal/Administration/Storages.html).
