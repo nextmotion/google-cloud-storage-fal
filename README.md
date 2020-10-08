@@ -43,7 +43,7 @@ All configuration fields supports `%env(ENV_VALUE_NAME)%` syntax.
 
 ![](Documentation/Screenshots/driver-configuration-json-key-value.png)
 
-## Local `1:\_processed\_` vs. remote `\_processed\_` images
+## Local `1:_processed_` vs. remote `_processed_` images
 
 It's up to you and depends on your needs where you want to save your _processed_ images. 
 
