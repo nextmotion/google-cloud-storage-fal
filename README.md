@@ -20,7 +20,7 @@ It gives you the power to use TYPO3 "cloud native" instead of "cloud ready" on G
 The extension should be installed via Composer
 
 ```
-composer require nextmotion/google_cloud_storage_fal
+composer require nextmotion/google-cloud-storage-fal
 ```
 
 ## Configuration
