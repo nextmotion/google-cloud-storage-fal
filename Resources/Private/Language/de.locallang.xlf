@@ -5,28 +5,28 @@
         <header/>
         <body>
             <trans-unit id="driverConfiguration.authentication">
-                <source>Authentifizierung</source>
+                <target>Authentifizierung</target>
             </trans-unit>
             <trans-unit id="driverConfiguration.authenticationType.label">
-                <source>Authentifizierungsart</source>
+                <target>Authentifizierungsart</target>
             </trans-unit>
             <trans-unit id="driverConfiguration.select.privateKeyJsonPathAndFileName">
-                <source>Pfad zum Private Key (json)</source>
+                <target>Pfad zum Private Key (json)</target>
             </trans-unit>
             <trans-unit id="driverConfiguration.select.privateKeyJson">
-                <source>Private Key</source>
+                <target>Private Key</target>
             </trans-unit>
             <trans-unit id="driverConfiguration.keyFilePath.label">
-                <source>Pfad zur Datei ausgehend vom Projektwurzelverzeichniss</source>
+                <target>Pfad zur Datei ausgehend vom Projektwurzelverzeichniss</target>
             </trans-unit>
             <trans-unit id="driverConfiguration.keyFileContent.label">
-                <source>Privater Schlüssel als Json</source>
+                <target>Privater Schlüssel als Json</target>
             </trans-unit>
             <trans-unit id="driverConfiguration.bucketName.label">
-                <source>Bucket name</source>
+                <target>Bucket Name</target>
             </trans-unit>
             <trans-unit id="driverConfiguration.publicBaseUri.label">
-                <source>Öffentliche Basis-URL (mit Slash am Ende)</source>
+                <target>Öffentliche Basis-URL (mit Slash am Ende)</target>
             </trans-unit>
         </body>
     </file>
