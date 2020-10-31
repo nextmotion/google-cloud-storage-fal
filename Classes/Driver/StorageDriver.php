@@ -12,6 +12,7 @@ namespace Nextmotion\GoogleCloudStorageDriver\Driver;
  * of the License, or any later version.
  */
 
+use Google\Cloud\Core\Exception\GoogleException;
 use Google\Cloud\Storage\Bucket;
 use Google\Cloud\Storage\StorageClient;
 use Google\Cloud\Storage\StorageObject;
@@ -426,17 +427,25 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
         }
 
         $options = [
-            'resumable' => true,
+            'resumable' => filesize($localFilePath) > 0, // 0 byte files can't use resumable.
             'name' => $fileIdentifier,
             'metadata' => [
                 'contentType' => $contentType,
             ],
         ];
 
-        $this->bucket->upload(
+        $uploader = $this->bucket->getResumableUploader(
             fopen($localFilePath, 'r'),
             $options
         );
+
+        try {
+            $uploader->upload();
+        } catch (GoogleException $ex) {
+            $resumeUri = $uploader->getResumeUri();
+            $uploader->resume($resumeUri);
+        }
+
         $this->bucketCache->clear();
 
         if ($removeOriginal === true) {
@@ -474,6 +483,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFileContents($fileIdentifier)
     {
+        $fileIdentifier = $this->namingHelper->normalizeFileName($fileIdentifier);
         return $this->bucket->object($fileIdentifier)->downloadAsString();
     }
 
@@ -483,7 +493,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
     public function setFileContents($fileIdentifier, $contents)
     {
         $options = [
-            'resumable' => true,
+            'resumable' => false,
             'name' => $fileIdentifier,
         ];
         $object = $this->bucket->upload(
