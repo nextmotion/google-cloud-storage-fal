@@ -12,6 +12,7 @@ This FAL (FileAbstractionLayer) driver allows you to use Google Cloud Storage Bu
 - Supports direct to google storage added files (without using Filelist module).
 - Simulates folders, even if google cloud storage is a flat filesystem.
 - It comes with caching strategy for higher performance. 
+- Migration command to move files from another storage to google cloud storage
 
 It gives you the power to use TYPO3 "cloud native" instead of "cloud ready" on Google Cloud Platform (GCP).
 
@@ -88,6 +89,53 @@ All configuration fields supports `%env(ENV_VALUE_NAME)%` syntax.
 It's up to you and depends on your needs where you want to save your _processed_ images. 
 
 If you are trying to develop a cloud-native TYPO3, it makes a lot of sense to store _processed_ images in the Google Cloud Store as well. Once an image is processed, any instance of your TYPO3 can access it. 
+
+# Migrate existing files to google cloud storage 
+
+!!!
+**WARNING:** *Backup your TYPO3 database and files before.* 
+!!!
+
+Use CLI command `googlecloudstorage:move` to move files from existing storage and keep references.
+
+```
+vendor/bin/typo3cms googlecloudstorage:move 1 2
+```
+Usually `1` is the local file storage and in this example `2` is the Google Cloud Storage bucket.
+
+1. This command read every record in sys_file table with the source storage id (`1`). (Before you start please make sure, that all files are indexed. You can use the planer task "File Abstraction Layer: Update storage index".) 
+2. The process download each file from the source to local temp directory.
+3. Upload the file from to temp directory the destination storage.
+4. Exchanges storage id in the sys_file.
+5. Deletes the file in source storage (`1`).
+
+After finishing the command you must clear the processed_files with the module "Maintenance >
+Remove Temporary Assets > Scan temporary files > Delete files in _proccessed_".
+
+*Note: Due technical limitations the created and modified date will set to the current timestamp.*
+
+```
+vendor/bin/typo3cms googlecloudstorage:move [-f|--force [FORCE]] [--filter FILTER] [--limit LIMIT] [--exclude EXCLUDE] [--] <source> <target>
+
+Usage:
+  googlecloudstorage:move [options] [--] <source> <target>
+  google_cloud_storage_fal:googlecloudstorage:move
+
+Arguments:
+  source                 Source storage identifier
+  target                 Target storage identifier
+
+Options:
+  -f, --force[=FORCE]    never prompt
+                          • [default: false]
+      --filter=FILTER    Filter pattern with possible wild cards, --filter="%.pdf"
+                          • [default: ""]
+      --limit=LIMIT      Add a possible offset, limit to restrain the number of files. e.g. 0,100
+                          • [default: ""]
+      --exclude=EXCLUDE  Exclude pattern, can contain comma separated values e.g. --exclude="/apps/%,/_temp/%"
+                          • [default: ""]
+
+```
 
 # Limitations
 
