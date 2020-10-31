@@ -253,6 +253,11 @@ class MoveFilesBetweenStorages extends Command
                 $this->log("[temp -> destination] file already exists. skip upload. deleted temp file.");
             }
 
+            // Delete from the source
+            $fileObject->delete();
+            $this->log("[source             ] deleted original file.");
+
+
             // Update the storage uid
             $this->updateDatabase(
                 $fileObject,
