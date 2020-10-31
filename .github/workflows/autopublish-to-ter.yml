@@ -38,8 +38,8 @@ jobs:
     name: TYPO3 TER release
 
     # Depend on a valid tag
-    needs: tag-valid
-    if: needs.tag-valid.outputs.status == 'true'
+    #needs: tag-valid
+    #if: needs.tag-valid.outputs.status == 'true'
 
     runs-on: ubuntu-latest
     strategy:
@@ -67,6 +67,9 @@ jobs:
 
       - name: Remove .git folder
         run: rm -rf ./$TYPO3_EXTENSION_KEY/.git
+
+      - name: Remove .github folder
+        run: rm -rf ./$TYPO3_EXTENSION_KEY/.github
 
       - name: Upload EXT:${{ env.TYPO3_EXTENSION_KEY }} as ${{ github.event.ref }} to TER
         run: php ~/.composer/vendor/bin/upload "./$TYPO3_EXTENSION_KEY" "$TYPO3_USER" "$TYPO3_PASSWORD" "${{ github.event.head_commit.message }}"
