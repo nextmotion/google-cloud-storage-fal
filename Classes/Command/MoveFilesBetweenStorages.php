@@ -220,51 +220,74 @@ class MoveFilesBetweenStorages extends Command
     private function transfer($sourceStorage, $targetStorage, StorageDriver $targetDriver, $filter, $excludes, $limits)
     {
         $files = $this->getFiles($sourceStorage, $filter, $excludes, $limits);
+
+        // sys_file can contain more than one entry with the same filename.
+        // maybe thats the reason: https://forge.typo3.org/issues/72975
+        $alreadyMoved = [];
+
         foreach ($files as $file) {
+
             /** @var File $fileObject */
             $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(
                 $sourceStorage->getUid(),
                 $file['identifier']
             );
             $this->log("");
+
             $this->log("<info>" . $fileObject->getIdentifier() . "</info>");
-
-            // Download from source to temp
-            $tempFileName = GeneralUtility::tempnam('gcp-move-file-', '.transfer');
-            $this->log("[source -> temp     ] download to <info>" . $tempFileName . "</info>");
-            file_put_contents($tempFileName, $fileObject->getContents());
-
-
-            // Create parent folder if it doesn't exists
-            $parentFolder = $fileObject->getParentFolder()->getIdentifier();
-            if (!$targetDriver->folderExists($parentFolder)) {
-                $this->log("[destination        ] createFolder <info>" . $parentFolder."</info>");
-                $targetDriver->createFolder($parentFolder, '/', true);
+            if (isset($alreadyMoved[$fileObject->getIdentifier()])) {
+                $this->log("[info               ] already moved");
+                // Update the storage uid
+                $this->log("[database           ] update storage id in sys_file");
+                $this->updateDatabase(
+                    $fileObject,
+                    [
+                        'storage' => $this->targetStorage->getUid()
+                    ]
+                );
+                continue;
             }
 
-            // Upload from temp to destination
-            if (!$targetDriver->fileExists($fileObject->getIdentifier())) {
-                $destinationDir = dirname($fileObject->getIdentifier());
-                $destinationFilename = basename($fileObject->getIdentifier());
-                $this->log("[temp -> destination] upload <info>" . number_format(filesize($tempFileName), 0, ',', '.') . " Bytes</info> to <info>" . $destinationDir . "/".$destinationFilename . "</info>");
-                $targetDriver->addFile($tempFileName, $destinationDir, $destinationFilename, true);
-            } else {
-                @unlink($tempFileName);
-                $this->log("[temp -> destination] file already exists. skip upload. deleted temp file.");
+            try {
+                // Download from source to temp
+                $tempFileName = GeneralUtility::tempnam('gcp-move-file-', '.transfer');
+                $this->log("[source -> temp     ] download to <info>" . $tempFileName . "</info>");
+                file_put_contents($tempFileName, $fileObject->getContents());
+
+                // Create parent folder if it doesn't exists
+                $parentFolder = $fileObject->getParentFolder()->getIdentifier();
+                if (!$targetDriver->folderExists($parentFolder)) {
+                    $this->log("[destination        ] createFolder <info>" . $parentFolder . "</info>");
+                    $targetDriver->createFolder($parentFolder, '/', true);
+                }
+
+                // Upload from temp to destination
+                if (!$targetDriver->fileExists($fileObject->getIdentifier())) {
+                    $destinationDir = dirname($fileObject->getIdentifier());
+                    $destinationFilename = basename($fileObject->getIdentifier());
+                    $this->log("[temp -> destination] upload <info>" . number_format(filesize($tempFileName), 0, ',', '.') . " Bytes</info> to <info>" . $destinationDir . "/" . $destinationFilename . "</info>");
+                    $targetDriver->addFile($tempFileName, $destinationDir, $destinationFilename, true);
+                } else {
+                    @unlink($tempFileName);
+                    $this->log("[temp -> destination] file already exists. skip upload. deleted temp file.");
+                }
+
+                // Update the storage uid
+                $this->log("[database           ] update storage id in sys_file");
+                $this->updateDatabase(
+                    $fileObject,
+                    [
+                        'storage' => $this->targetStorage->getUid()
+                    ]
+                );
+
+                // Delete from the source
+                $fileObject->delete();
+                $this->log("[source             ] deleted original file.");
+                $alreadyMoved[$fileObject->getIdentifier()] = true;
+            } catch (Exception\InsufficientFileAccessPermissionsException $e) {
+                $this->log("[aborted            ] InsufficientFileAccessPermissionsException.");
             }
-
-            // Delete from the source
-            $fileObject->delete();
-            $this->log("[source             ] deleted original file.");
-
-
-            // Update the storage uid
-            $this->updateDatabase(
-                $fileObject,
-                [
-                    'storage' => $this->targetStorage->getUid()
-                ]
-            );
         }
 
     }
