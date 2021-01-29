@@ -24,6 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Resource\Driver\DriverRegistry;
 use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -184,14 +185,21 @@ class MoveFilesBetweenStorages extends Command
             }
         }
 
-        // we need the target driver for direct access
+        // we need the source & target driver for direct access
         $targetDriver = GeneralUtility::makeInstance(StorageDriver::class, $this->targetStorage->getConfiguration());
         $targetDriver->processConfiguration();
         $targetDriver->initialize();
 
+        $registry = GeneralUtility::makeInstance(DriverRegistry::class);
+        $sourceDriverClass = $registry->getDriverClass($this->sourceStorage->getDriverType());
+        $sourceDriver = GeneralUtility::makeInstance($sourceDriverClass, $this->sourceStorage->getConfiguration());
+        $sourceDriver->processConfiguration();
+        $sourceDriver->initialize();
+
         $this->transfer(
             $this->sourceStorage,
             $this->targetStorage,
+            $sourceDriver,
             $targetDriver,
             $input->getOption("filter"),
             $input->getOption("exclude"),
@@ -217,8 +225,9 @@ class MoveFilesBetweenStorages extends Command
         }
     }
 
-    private function transfer($sourceStorage, $targetStorage, StorageDriver $targetDriver, $filter, $excludes, $limits)
+    private function transfer($sourceStorage, $targetStorage, \TYPO3\CMS\Core\Resource\Driver\AbstractDriver $sourceDriver, StorageDriver $targetDriver, $filter, $excludes, $limits)
     {
+
         $files = $this->getFiles($sourceStorage, $filter, $excludes, $limits);
 
         // sys_file can contain more than one entry with the same filename.
@@ -281,8 +290,8 @@ class MoveFilesBetweenStorages extends Command
                     ]
                 );
 
-                // Delete from the source
-                $fileObject->delete();
+                // Delete file from the source
+                $sourceDriver->deleteFile($fileObject->getIdentifier());
                 $this->log("[source             ] deleted original file.");
                 $alreadyMoved[$fileObject->getIdentifier()] = true;
             } catch (Exception\InsufficientFileAccessPermissionsException $e) {
