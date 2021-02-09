@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace nextmotion\GoogleCloudStorageDriver\EventListener;
+namespace Nextmotion\GoogleCloudStorageDriver\EventListener;
 
 /*
  * This file is part of TYPO3 CMS-based extension "google_cloud_storage_fal" by next.motion.
