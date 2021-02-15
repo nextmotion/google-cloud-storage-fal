@@ -12,16 +12,19 @@ namespace Nextmotion\GoogleCloudStorageDriver\EventListener;
  * of the License, or any later version.
  */
 
+use Nextmotion\GoogleCloudStorageDriver\Driver\StorageDriver;
 use TYPO3\CMS\Core\Resource\Event\GeneratePublicUrlForResourceEvent;
 
 class GeneratePublicUrlForResourceListener
 {
     public function __invoke(GeneratePublicUrlForResourceEvent $event): void
     {
-        $event->setPublicUrl(
-            $event->getDriver()->getPublicUrl(
-                $event->getResource()->getIdentifier()
-            )
-        );
+        if ($event->getDriver() instanceof StorageDriver) {
+            $event->setPublicUrl(
+                $event->getDriver()->getPublicUrl(
+                    $event->getResource()->getIdentifier()
+                )
+            );
+        }
     }
 }
