@@ -275,7 +275,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function isWithin($folderIdentifier, $identifier)
     {
-        return GeneralUtility::isFirstPartOfStr($identifier, $folderIdentifier);
+        return GeneralUtility::isFirstPartOfStr('/' . ltrim($identifier, '/'), $folderIdentifier);
     }
 
     /**
