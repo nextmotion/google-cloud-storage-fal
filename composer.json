@@ -28,7 +28,7 @@
   "type": "typo3-cms-extension",
   "require": {
     "php": "^7.1",
-    "typo3/cms-core": ">=10.4 <10.9.99",
+    "typo3/cms-core": ">=10.4 <11.9.99",
     "google/cloud-storage": "^v1.23"
   },
   "autoload": {
