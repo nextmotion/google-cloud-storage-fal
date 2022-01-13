@@ -460,6 +460,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function deleteFile($fileIdentifier)
     {
+        $fileIdentifier = $this->namingHelper->normalizeFileName($fileIdentifier);
         $this->bucketOperations->delete($fileIdentifier);
 
         return true;
