@@ -35,5 +35,10 @@
     "psr-4": {
       "Nextmotion\\GoogleCloudStorageDriver\\": "Classes"
     }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "google_cloud_storage_fal"
+    }
   }
 }
