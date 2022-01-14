@@ -12,3 +12,10 @@ services:
       - name: event.listener
         identifier: 'nextmotionGoogleCloudStorageGeneratePublicUrlForResourceListener'
         event: TYPO3\CMS\Core\Resource\Event\GeneratePublicUrlForResourceEvent
+
+  Nextmotion\GoogleCloudStorageDriver\Command\MoveFilesBetweenStorages:
+    tags:
+      - name: 'console.command'
+        command: 'googlecloudstorage:move'
+        schedulable: true
+        description: 'Moving all files between two storages'
