@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nextmotion\GoogleCloudStorageDriver\Command;
 
 /*
@@ -22,6 +24,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Resource\Driver\DriverRegistry;
@@ -444,7 +447,7 @@ class MoveFilesBetweenStorages extends Command
 
         if (strpos($configuredPrivateKeyFile, '/') !== 0) {
             $privateKeyPathAndFilename = realpath(
-                PATH_site . $configuredPrivateKeyFile
+                Environment::getPublicPath() . $configuredPrivateKeyFile
             );
         } else {
             $privateKeyPathAndFilename = $configuredPrivateKeyFile;
