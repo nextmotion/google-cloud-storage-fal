@@ -511,6 +511,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFileForLocalProcessing($fileIdentifier, $writable = true)
     {
+        $fileIdentifier = $this->namingHelper->normalizeFileName($fileIdentifier); 
         $temporaryPath = '';
 
         $obj = $this->bucket->object($fileIdentifier);
