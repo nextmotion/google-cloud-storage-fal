@@ -138,6 +138,7 @@ class Operations
      */
     public function delete($fileIdentifier)
     {
+        $fileIdentifier = $this->namingHelper->normalizeFileName($fileIdentifier);
         if ($this->bucketCache instanceof BucketCache) {
             $this->bucketCache->clear();
         }
