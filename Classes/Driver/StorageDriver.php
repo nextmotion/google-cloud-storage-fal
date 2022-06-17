@@ -134,7 +134,9 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
     private function getKeyFilePath(string $path)
     {
         return defined('TYPO3_MODE') ?
-            \TYPO3\CMS\Core\Core\Environment::getProjectPath() . DIRECTORY_SEPARATOR . $this->keyFilePath :
+            PathUtility::isAbsolutePath($this->keyFilePath)
+                ? $this->keyFilePath
+                : \TYPO3\CMS\Core\Core\Environment::getProjectPath() . DIRECTORY_SEPARATOR . $this->keyFilePath :
             $this->keyFilePath;
     }
 
@@ -511,7 +513,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFileForLocalProcessing($fileIdentifier, $writable = true)
     {
-        $fileIdentifier = $this->namingHelper->normalizeFileName($fileIdentifier); 
+        $fileIdentifier = $this->namingHelper->normalizeFileName($fileIdentifier);
         $temporaryPath = '';
 
         $obj = $this->bucket->object($fileIdentifier);
