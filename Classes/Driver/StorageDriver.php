@@ -194,7 +194,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
                     true
                 );
                 foreach ($objects as $object) {
-                    $this->bucketOperations->delete($object->getName());
+                    $this->bucketOperations->delete($object->getName(), $object->isFolder());
                 }
 
                 return true;

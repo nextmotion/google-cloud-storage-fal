@@ -133,12 +133,18 @@ class Operations
      * Deletes an object.
      *
      * @param string $fileIdentifier
+     * @param bool $isFolder
      *
      * @return void
      */
-    public function delete($fileIdentifier)
+    public function delete($fileIdentifier, $isFolder = false)
     {
-        $fileIdentifier = $this->namingHelper->normalizeFileName($fileIdentifier);
+        if ($isFolder === true) {
+            $fileIdentifier = $this->namingHelper->normalizeFolderName($fileIdentifier);
+        } else {
+            $fileIdentifier = $this->namingHelper->normalizeFileName($fileIdentifier);
+        }
+
         if ($this->bucketCache instanceof BucketCache) {
             $this->bucketCache->clear();
         }
