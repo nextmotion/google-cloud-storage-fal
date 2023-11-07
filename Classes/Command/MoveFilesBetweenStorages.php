@@ -40,50 +40,50 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class MoveFilesBetweenStorages extends Command
 {
 
-    const WARNING = 'warning';
+    public const WARNING = 'warning';
 
     /**
      * @var SymfonyStyle
      */
-    protected $io;
+    protected SymfonyStyle $io;
 
     /**
      * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * @var ResourceStorage
      */
-    protected $sourceStorage;
+    protected ResourceStorage $sourceStorage;
 
     /**
      * @var ResourceStorage
      */
-    protected $targetStorage;
+    protected ResourceStorage $targetStorage;
 
     /**
      * @var array
      */
-    protected $missingFiles = [];
+    protected array $missingFiles = [];
 
     /**
      * @var string
      */
-    protected $tableName = 'sys_file';
+    protected string $tableName = 'sys_file';
     /**
      * @var array
      */
-    protected $hasFolders = [];
+    protected array $hasFolders = [];
     /**
      * @var array
      */
-    private $configuration = [];
+    private array $configuration = [];
 
     /**
      * Configure the command by defining the name, options and arguments
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription(
@@ -139,7 +139,7 @@ class MoveFilesBetweenStorages extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
 
@@ -161,8 +161,9 @@ class MoveFilesBetweenStorages extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         if ($this->targetStorage->getDriverType() !== "GoogleCloudStorageDriver") {
@@ -218,7 +219,7 @@ class MoveFilesBetweenStorages extends Command
      * @param array $arguments
      * @param string $severity can be 'warning', 'error', 'success'
      */
-    protected function log(string $message = '', array $arguments = [], $severity = '')
+    protected function log(string $message = '', array $arguments = [], $severity = ''): void
     {
         $formattedMessage = vsprintf($message, $arguments);
         if ($severity) {
@@ -228,7 +229,7 @@ class MoveFilesBetweenStorages extends Command
         }
     }
 
-    private function transfer($sourceStorage, $targetStorage, \TYPO3\CMS\Core\Resource\Driver\AbstractDriver $sourceDriver, StorageDriver $targetDriver, $filter, $excludes, $limits)
+    private function transfer($sourceStorage, $targetStorage, \TYPO3\CMS\Core\Resource\Driver\AbstractDriver $sourceDriver, StorageDriver $targetDriver, $filter, $excludes, $limits): void
     {
 
         $files = $this->getFiles($sourceStorage, $filter, $excludes, $limits);
@@ -305,8 +306,10 @@ class MoveFilesBetweenStorages extends Command
     }
 
     /**
-     * @param InputInterface $input
-     *
+     * @param $storage
+     * @param $filter
+     * @param $excludes
+     * @param $limits
      * @return array
      */
     protected function getFiles($storage, $filter, $excludes, $limits): array
@@ -490,9 +493,9 @@ class MoveFilesBetweenStorages extends Command
     }
 
     /**
-     * @return object|Connection
+     * @return \TYPO3\CMS\Core\Database\Connection
      */
-    protected function getConnection(): Connection
+    protected function getConnection(): \TYPO3\CMS\Core\Database\Connection
     {
         /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
@@ -503,7 +506,7 @@ class MoveFilesBetweenStorages extends Command
      * @param string $type
      * @param array $files
      */
-    protected function writeLog(string $type, array $files)
+    protected function writeLog(string $type, array $files): void
     {
         $logFileName = sprintf(
             '/tmp/%s-files-%s-%s-log',
@@ -531,7 +534,7 @@ class MoveFilesBetweenStorages extends Command
      * @param string $message
      * @param array $arguments
      */
-    protected function warning(string $message = '', array $arguments = [])
+    protected function warning(string $message = '', array $arguments = []): void
     {
         $this->log($message, $arguments, self::WARNING);
     }

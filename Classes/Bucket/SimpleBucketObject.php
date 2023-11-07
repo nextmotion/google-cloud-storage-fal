@@ -14,38 +14,38 @@ namespace Nextmotion\GoogleCloudStorageDriver\Bucket;
 
 class SimpleBucketObject
 {
-    const TYPE_FILE = 0;
-    const TYPE_FOLDER = 1;
+    public const TYPE_FILE = 0;
+    public const TYPE_FOLDER = 1;
 
     /**
      * @var string full path of file or folder
      */
-    private $name;
+    private string $name;
 
     /**
      * @var string Determinated content type by google
      */
-    private $contentType;
+    private string $contentType;
 
     /**
      * @var int Filesize in byte
      */
-    private $filesize;
+    private int $filesize;
 
     /**
      * @var int Timestamp
      */
-    private $created_at;
+    private int $created_at;
 
     /**
      * @var int Timestamp
      */
-    private $updated_at;
+    private int $updated_at;
 
     /**
      * @var int See TYPE_FILE OR TYPE_FOLDER
      */
-    private $type;
+    private int $type;
 
     /**
      * SimpleBucketObject constructor.
@@ -54,12 +54,19 @@ class SimpleBucketObject
      */
     public function __construct($config)
     {
-        $this->name = $config['name'];
-        $this->type = $config['type'];
-        $this->contentType = $config['contentType'] ?? 0;
-        $this->filesize = $config['filesize'] ?? 0;
-        $this->created_at = $config['created_at'] ?? 0;
-        $this->updated_at = $config['updated_at'] ?? 0;
+        $name = $config['name'] ?? '';
+        $type = $config['type'];
+        $contentType = $config['contentType'] ?? 0;
+        $filesize = $config['filesize'] ?? 0;
+        $created_at = $config['created_at'] ?? 0;
+        $updated_at = $config['updated_at'] ?? 0;
+
+        $this->name = (string)$name;
+        $this->type = (int) $type;
+        $this->contentType = (string)$contentType;
+        $this->filesize = (int)$filesize;
+        $this->created_at = (int)$created_at;
+        $this->updated_at = (int)$updated_at;
     }
 
     /**
@@ -134,16 +141,16 @@ class SimpleBucketObject
     /**
      * @return bool
      */
-    public function isFolder()
+    public function isFolder(): bool
     {
-        return $this->type == self::TYPE_FOLDER;
+        return $this->type === self::TYPE_FOLDER;
     }
 
     /**
      * @return bool
      */
-    public function isFile()
+    public function isFile(): bool
     {
-        return $this->type == self::TYPE_FILE;
+        return $this->type === self::TYPE_FILE;
     }
 }

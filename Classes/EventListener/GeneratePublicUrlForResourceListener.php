@@ -19,12 +19,13 @@ class GeneratePublicUrlForResourceListener
 {
     public function __invoke(GeneratePublicUrlForResourceEvent $event): void
     {
-        if ($event->getDriver() instanceof StorageDriver) {
-            $event->setPublicUrl(
-                $event->getDriver()->getPublicUrl(
-                    $event->getResource()->getIdentifier()
-                )
-            );
+        if (!($event->getDriver() instanceof StorageDriver)) {
+            return;
         }
+        $identifier = $event->getResource()->getIdentifier();
+        /** @var StorageDriver $driver */
+        $driver     = $event->getDriver();
+        $publicUrl  = $driver->getPublicUrl($identifier);
+        $event->setPublicUrl($publicUrl);
     }
 }

@@ -12,7 +12,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_company' => 'next.motion',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.0.0-11.9.99',
+            'typo3' => '12.0.0-12.9.99',
         ],
     ],
 ];

@@ -13,6 +13,7 @@ namespace Nextmotion\GoogleCloudStorageDriver\Bucket;
  */
 
 use Google\Cloud\Storage\Bucket;
+use Google\Cloud\Storage\StorageObject;
 use Nextmotion\GoogleCloudStorageDriver\Cache\BucketCache;
 
 /**
@@ -24,19 +25,19 @@ class Operations
     /**
      * @var Bucket
      */
-    private $bucket;
+    private Bucket $bucket;
     /**
      * @var Objects
      */
-    private $bucketObjects;
+    private Objects $bucketObjects;
     /**
      * @var BucketCache
      */
-    private $bucketCache;
+    private mixed $bucketCache;
     /**
      * @var NamingHelper
      */
-    private $namingHelper;
+    private NamingHelper $namingHelper;
 
     /**
      * Operations constructor.
@@ -59,7 +60,7 @@ class Operations
      *
      * @return bool
      */
-    public function mkdir($folderName)
+    public function mkdir(string $folderName): bool
     {
         $folderName = $this->namingHelper->normalizeFolderName($folderName);
         // Bucket root exists by default
@@ -79,9 +80,9 @@ class Operations
      *
      * @param string $filename
      *
-     * @return \Google\Cloud\Storage\StorageObject
+     * @return StorageObject
      */
-    public function createEmptyFile($filename)
+    public function createEmptyFile(string $filename): StorageObject
     {
         if ($this->bucketCache instanceof BucketCache) {
             $this->bucketCache->clear();
@@ -96,15 +97,18 @@ class Operations
      * @param string $fileIdentifier
      * @param string $targetFileName
      *
-     * @return \Google\Cloud\Storage\StorageObject
+     * @return StorageObject
      */
-    public function copyFromTo($fileIdentifier, $targetFileName)
+    public function copyFromTo(string $fileIdentifier, string $targetFileName): StorageObject
     {
         if ($this->bucketCache instanceof BucketCache) {
             $this->bucketCache->clear();
         }
 
-        return $this->bucket->object($fileIdentifier)->copy($this->bucket->name(), ['name' => $targetFileName]);
+        $fileIdentifier = ltrim($fileIdentifier, '/');
+        $file = $this->bucket->object($fileIdentifier);
+        $bucketName = $this->bucket->name();
+        return $file->copy($bucketName, ['name' => $targetFileName]);
     }
 
     /**
@@ -113,9 +117,9 @@ class Operations
      * @param string $oldName
      * @param string $newName
      *
-     * @return \Google\Cloud\Storage\StorageObject|null
+     * @return StorageObject|null
      */
-    public function rename($oldName, $newName)
+    public function rename(string $oldName, string $newName): ?StorageObject
     {
         if ($this->bucketCache instanceof BucketCache) {
             $this->bucketCache->clear();
@@ -137,7 +141,7 @@ class Operations
      *
      * @return void
      */
-    public function delete($fileIdentifier, $isFolder = false)
+    public function delete(string $fileIdentifier, bool $isFolder = false): void
     {
         if ($isFolder === true) {
             $fileIdentifier = $this->namingHelper->normalizeFolderName($fileIdentifier);

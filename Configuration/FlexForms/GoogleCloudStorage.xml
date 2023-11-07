@@ -39,7 +39,7 @@
                             <config>
                                 <type>input</type>
                                 <size>50</size>
-                                <eval>required</eval>
+                                <required>1</required>
                                 <placeholder>googlecloudkeyfile.json or %env(GOOGLE_ENVIRONMENT_VAR_NAME)%</placeholder>
                             </config>
                         </TCEforms>
@@ -51,7 +51,7 @@
                             <config>
                                 <type>text</type>
                                 <rows>15</rows>
-                                <eval>required</eval>
+                                <required>1</required>
                                 <placeholder>Json or %env(GOOGLE_ENVIRONMENT_VAR_NAME)%</placeholder>
                             </config>
                         </TCEforms>
@@ -62,7 +62,7 @@
                             <config>
                                 <type>input</type>
                                 <size>50</size>
-                                <eval>required</eval>
+                                <required>1</required>
                                 <placeholder>bucket name or or %env(GOOGLE_ENVIRONMENT_VAR_NAME)%</placeholder>
                             </config>
                         </TCEforms>
@@ -73,7 +73,7 @@
                             <config>
                                 <type>input</type>
                                 <size>50</size>
-                                <eval>required</eval>
+                                <required>1</required>
                                 <placeholder>https://storage.googleapis.com/[bucketname]/ or %env(GOOGLE_ENVIRONMENT_VAR_NAME)%</placeholder>
                             </config>
                         </TCEforms>
