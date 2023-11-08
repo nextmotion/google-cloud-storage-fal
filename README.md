@@ -4,7 +4,6 @@
 [![TYPO3 10](https://img.shields.io/badge/TYPO3-10-orange.svg)](https://get.typo3.org/version/10)
 [![Total Downloads](https://poser.pugx.org/nextmotion/google-cloud-storage-fal/d/total)](https://packagist.org/packages/nextmotion/google-cloud-storage-fal)
 [![Monthly Downloads](https://poser.pugx.org/nextmotion/google-cloud-storage-fal/d/monthly)](https://packagist.org/packages/nextmotion/google-cloud-storage-fal)
-![Test](https://github.com/nextmotion/google-cloud-storage-fal/workflows/Test/badge.svg)
 
 # TYPO3 Google Cloud Storage FAL driver.
 
