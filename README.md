@@ -1,3 +1,11 @@
+[![Latest Stable Version](https://poser.pugx.org/nextmotion/google-cloud-storage-fal//v/stable)](https://extensions.typo3.org/extension/google_cloud_storage_fal)
+[![TYPO3 12](https://img.shields.io/badge/TYPO3-12-orange.svg)](https://get.typo3.org/version/12)
+[![TYPO3 11](https://img.shields.io/badge/TYPO3-11-orange.svg)](https://get.typo3.org/version/11)
+[![TYPO3 10](https://img.shields.io/badge/TYPO3-10-orange.svg)](https://get.typo3.org/version/10)
+[![Total Downloads](https://poser.pugx.org/nextmotion/google-cloud-storage-fal/d/total)](https://packagist.org/packages/nextmotion/google-cloud-storage-fal)
+[![Monthly Downloads](https://poser.pugx.org/nextmotion/google-cloud-storage-fal/d/monthly)](https://packagist.org/packages/nextmotion/google-cloud-storage-fal)
+![Test](https://github.com/nextmotion/google-cloud-storage-fal/workflows/Test/badge.svg)
+
 # TYPO3 Google Cloud Storage FAL driver.
 
 This FAL (FileAbstractionLayer) driver allows you to use Google Cloud Storage Buckets in TYPO3 for your assets instead of a local file system. It relies on ```google/cloud-storage``` library to connect to Google.
