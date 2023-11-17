@@ -1,11 +1,18 @@
 <?php
 
-if (!defined('TYPO3_MODE')) {
+if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
-/** @var \TYPO3\CMS\Core\Resource\Driver\DriverRegistry $driverRegistry */
-$driverRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Driver\DriverRegistry::class);
+use TYPO3\CMS\Core\Resource\Driver\DriverRegistry;
+
+call_user_func(static function ($extensionKey) : void {
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['stylesheets'][$extensionKey] =
+        'EXT:google_cloud_storage_fal/Resources/Public/Css/Backend.css';
+},'google_cloud_storage_fal');
+
+/** @var DriverRegistry $driverRegistry */
+$driverRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DriverRegistry::class);
 $driverRegistry->registerDriverClass(
     \Nextmotion\GoogleCloudStorageDriver\Driver\StorageDriver::class,
     'GoogleCloudStorageDriver',
