@@ -2,13 +2,11 @@
 
 name: CI
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the main branch
+# Controls when the action will run. Triggers the workflow on tags
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - '**'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -38,38 +36,19 @@ jobs:
     name: TYPO3 TER release
 
     # Depend on a valid tag
-    #needs: tag-valid
-    #if: needs.tag-valid.outputs.status == 'true'
+    needs: tag-valid
+    if: needs.tag-valid.outputs.status == 'true'
 
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        php-versions: [8.1]
-
-    env:
-      # Add your extension key
-      TYPO3_EXTENSION_KEY: google_cloud_storage_fal
-      TYPO3_USER: ${{ secrets.TYPO3_USER }}
-      TYPO3_PASSWORD: ${{ secrets.TYPO3_PASSWORD }}
+      fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish to TER
+        uses: tomasnorre/typo3-upload-ter@v2
         with:
-          path: ${{ env.TYPO3_EXTENSION_KEY }}
+          api-token: ${{ secrets.TYPO3_API_TOKEN }}
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: intl, mbstring, xml, soap, zip, curl
-
-      - name: Install TYPO3 TER client
-        run: composer global require namelesscoder/typo3-repository-client "^2.0" --prefer-dist --no-progress --no-suggest
-
-      - name: Remove .git folder
-        run: rm -rf ./$TYPO3_EXTENSION_KEY/.git
-
-      - name: Remove .github folder
-        run: rm -rf ./$TYPO3_EXTENSION_KEY/.github
-
-      - name: Upload EXT:${{ env.TYPO3_EXTENSION_KEY }} as ${{ github.event.ref }} to TER
-        run: php ~/.composer/vendor/bin/upload "./$TYPO3_EXTENSION_KEY" "$TYPO3_USER" "$TYPO3_PASSWORD" "${{ github.event.head_commit.message }}"

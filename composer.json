@@ -40,5 +40,12 @@
     "typo3/cms": {
       "extension-key": "google_cloud_storage_fal"
     }
+  },
+  "scripts": {
+    "prepare-release": [
+      "rm .gitignore",
+      "rm -rf .git",
+      "rm -rf .github"
+    ]
   }
 }
