@@ -148,6 +148,13 @@ Options:
 
 - Supports only uniform buckets-level access. Read more at https://cloud.google.com/storage/docs/uniform-bucket-level-access.
 
+# Requirements & compatibility
+
+| EXT:google-cloud-storage-fal version | TYPO3 support | PHP support    |
+|--------------------------------------|---------------|----------------|
+| `>= 2.0`                             | `12`          | `>=8.1`        |
+| `>= 1.0`                             | `10`, `11`    | `>=7.1, <8.1`  |
+
 # Known issues
 
 * Google doesn't support directories because it is a flat filesystem like a key value storage. Directories are simulate in GCS trough empty files with trailing a slash (e.g. "`images/`"). This driver support both: The driver shows the simulated directories. If a simulated parent directory to a file is missing, the driver fakes the existing virtual directory. As a result its good to keep in mind: if you delete the last file in `images/`, e.g. `images/product.jpg`, and there is no parent virtual directory, the parent directory will also disappear from the file list. 
