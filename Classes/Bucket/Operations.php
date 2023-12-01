@@ -104,7 +104,10 @@ class Operations
             $this->bucketCache->clear();
         }
 
-        return $this->bucket->object($fileIdentifier)->copy($this->bucket->name(), ['name' => $targetFileName]);
+        $fileIdentifier = ltrim($fileIdentifier, '/');
+        $file = $this->bucket->object($fileIdentifier);
+        $bucketName = $this->bucket->name();
+        return $file->copy($bucketName, ['name' => $targetFileName]);
     }
 
     /**
