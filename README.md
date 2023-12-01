@@ -149,10 +149,10 @@ Options:
 
 # Requirements & compatibility
 
-| EXT:google-cloud-storage-fal version | TYPO3 support | PHP support    |
-|--------------------------------------|---------------|----------------|
-| `>= 2.0`                             | `12`          | `>=8.1`        |
-| `>= 1.0`                             | `10`, `11`    | `>=7.1, <8.1`  |
+| EXT:google-cloud-storage-fal version | TYPO3 support | PHP support   |
+|--------------------------------------|---------------|---------------|
+| `>= 2.0`                             | `12`          | `>=8.1`       |
+| `>= 1.0`                             | `10`, `11`    | `>=7.1, <8.3` |
 
 # Known issues
 
