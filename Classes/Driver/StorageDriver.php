@@ -624,7 +624,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * {@inheritdoc}
      */
-    protected function getDirectoryItemList($folderIdentifier, $start = 0, $numberOfItems = 0, array $filterMethods, $includeFiles = true, $includeDirs = true, $recursive = false, $sort = '', $sortRev = false)
+    protected function getDirectoryItemList($folderIdentifier, int $start, int $numberOfItems, array $filterMethods, $includeFiles = true, $includeDirs = true, $recursive = false, $sort = '', $sortRev = false)
     {
         $folders = [];
         try {
