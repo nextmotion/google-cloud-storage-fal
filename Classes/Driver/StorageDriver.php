@@ -282,6 +282,10 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function isWithin($folderIdentifier, $identifier): bool
     {
+        if (!is_string($folderIdentifier) || !is_string($identifier)) {
+            return false;
+        }
+
         $trimmedIdentifier = ltrim($identifier, '/');
         $searchIdentifier = '/' . $trimmedIdentifier;
         return str_starts_with($searchIdentifier, $folderIdentifier);
