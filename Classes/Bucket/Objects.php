@@ -15,6 +15,7 @@ namespace Nextmotion\GoogleCloudStorageDriver\Bucket;
 use Google\Cloud\Storage\Bucket;
 use Google\Cloud\Storage\StorageObject;
 use Nextmotion\GoogleCloudStorageDriver\Cache\BucketCache;
+use function PHPUnit\Framework\isInstanceOf;
 
 /**
  * Class ObjectListing.
@@ -33,42 +34,28 @@ use Nextmotion\GoogleCloudStorageDriver\Cache\BucketCache;
  */
 class Objects
 {
-    const RECURSIVE_FILES_AND_FOLDERS = [];
-    const DIRECT_SUB_FILES_ONLY = ['delimiter' => '/'];
-    const DIRECT_SUB_FILES_AND_FOLDERS = ['delimiter' => '/', 'includeTrailingDelimiter' => true];
+    public const array RECURSIVE_FILES_AND_FOLDERS = [];
 
-    /**
-     * @var Bucket
-     */
-    private $bucket;
-    /**
-     * @var NamingHelper
-     */
-    private $namingHelper;
+    public const array DIRECT_SUB_FILES_ONLY = ['delimiter' => '/'];
 
-    /**
-     * @var BucketCache|null
-     */
-    private $cache;
+    public const array DIRECT_SUB_FILES_AND_FOLDERS = ['delimiter' => '/', 'includeTrailingDelimiter' => true];
 
     /**
      * Objects constructor.
      *
      * @param Bucket $bucket
      * @param NamingHelper $namingHelper
-     * @param BucketCache|null $bucketCache
+     * @param BucketCache|null $cache
      */
-    public function __construct(Bucket $bucket, NamingHelper $namingHelper, $bucketCache = null)
-    {
-        $this->bucket = $bucket;
-        $this->namingHelper = $namingHelper;
-        $this->cache = $bucketCache;
+    public function __construct(
+        private readonly Bucket $bucket,
+        private readonly NamingHelper $namingHelper,
+        private ?BucketCache $cache = null,
+    ) {
     }
 
     /**
      * Tells whether the filename is a directory.
-     *
-     * @param string $folderName
      *
      * @return true|false
      */
@@ -102,7 +89,7 @@ class Objects
      *
      * @return true|false
      */
-    public function isBucketRootFolder(string $folderName)
+    public function isBucketRootFolder(string $folderName): bool
     {
         $folderName = $this->namingHelper->normalizeFolderName($folderName);
 
@@ -123,7 +110,7 @@ class Objects
      *
      * @return SimpleBucketObject|null Returns a StorageObject resource on success, or null on root folder or if folder doesn't exists
      */
-    public function getFolderObject(string $folderName)
+    public function getFolderObject(string $folderName): ?SimpleBucketObject
     {
         $folderName = $this->namingHelper->normalizeFolderName($folderName);
 
@@ -146,13 +133,18 @@ class Objects
      * @param bool $recursive
      * @param bool $includeFiles
      * @param bool $includeFolders
-     * @param mixed $includeItSelf
+     * @param false|null $includeItSelf
      *
      * @return SimpleBucketObject[] All objects
      */
-    public function getObjects($prefix = '', $recursive = false, $includeFiles = true, $includeFolders = true, $includeItSelf = false)
-    {
-        if ($this->cache && $this->cache->exists([__FUNCTION__, func_get_args()])) {
+    public function getObjects(
+        string $prefix = '',
+        bool $recursive = false,
+        bool $includeFiles = true,
+        bool $includeFolders = true,
+        false|null $includeItSelf = false
+    ): array {
+        if ($this->cache instanceof BucketCache && $this->cache->exists([__FUNCTION__, func_get_args()])) {
             return $this->cache->get([__FUNCTION__, func_get_args()]);
         }
 
@@ -166,7 +158,7 @@ class Objects
             }
 
             // Skip objects with wrong prefix
-            if (substr($objectName, 0, strlen($prefix)) !== $prefix) {
+            if (!str_starts_with($objectName, $prefix)) {
                 continue;
             }
 
@@ -181,8 +173,8 @@ class Objects
             }
 
             // Skip subdirectories
-            if (!$recursive &&
-                substr_count($objectName, '/', strlen($prefix)) > ($object->isFile() ? 0 : 1)) {
+            if (!$recursive
+                && substr_count($objectName, '/', strlen($prefix)) > ($object->isFile() ? 0 : 1)) {
                 continue;
             }
 
@@ -218,20 +210,19 @@ class Objects
         $objects = $this->bucket->objects($options);
 
         $result = [];
-        /** @var StorageObject $bucketObject */
-        foreach ($objects as $bucketObject) {
-            $objectName = $bucketObject->name();
-            $info = $bucketObject->info();
+        foreach ($objects as $object) {
+            $objectName = $object->name();
+            $info = $object->info();
 
             // directories ends up with '/'
-            $isFile = substr($objectName, -1) !== '/';
+            $isFile = !str_ends_with($objectName, '/');
 
             $result[$objectName] = new SimpleBucketObject([
                 'name' => $objectName,
                 'contentType' => $info['contentType'],
                 'filesize' => $info['size'],
-                'created_at' => strtotime($info['timeCreated']),
-                'updated_at' => strtotime($info['updated']),
+                'created_at' => strtotime((string)$info['timeCreated']),
+                'updated_at' => strtotime((string)$info['updated']),
                 'type' => $isFile ? SimpleBucketObject::TYPE_FILE : SimpleBucketObject::TYPE_FOLDER,
             ]);
 
@@ -243,18 +234,18 @@ class Objects
             // Its necessary to create this virtual directories:
             // dir1/
             // dir1/dir2/
-            if (strpos($objectName, '/') !== false) {
+            if (str_contains($objectName, '/')) {
                 $directories = explode('/', $objectName);
                 array_pop($directories);
                 $path = '';
-                foreach ($directories as $directoryPart) {
-                    $path .= $directoryPart . '/';
+                foreach ($directories as $directory) {
+                    $path .= $directory . '/';
                     if (!isset($result[$path])) {
                         $result[$path] = new SimpleBucketObject([
                             'name' => $path,
                             'type' => SimpleBucketObject::TYPE_FOLDER,
-                            'created_at' => strtotime($info['timeCreated']),
-                            'updated_at' => strtotime($info['updated']),
+                            'created_at' => strtotime((string)$info['timeCreated']),
+                            'updated_at' => strtotime((string)$info['updated']),
                         ]);
                     }
                 }
@@ -275,7 +266,7 @@ class Objects
      *
      * @return true|false
      */
-    public function fileExists($filename) // strict string typecast doesn't work because scheduler call function with null.
+    public function fileExists($filename): bool // strict string typecast doesn't work because scheduler call function with null.
     {
         $filename = $this->namingHelper->normalizeFileName($filename);
         $object = $this->getObject($filename);
@@ -300,12 +291,10 @@ class Objects
      * @param bool $recursive
      * @param bool $includeFiles
      * @param bool $includeFolders
-     * @param string $sort
-     * @param bool $sortRev
      *
      * @return SimpleBucketObject[]
      */
-    public function retrieveFileAndFoldersInPath($path, $recursive = false, $includeFiles = true, $includeFolders = true, $sort = '', $sortRev = false)
+    public function retrieveFileAndFoldersInPath($path, $recursive = false, $includeFiles = true, $includeFolders = true, string $sort = '', bool $sortRev = false)
     {
         $objects = $this->getObjects($path, $recursive, $includeFiles, $includeFolders);
 
@@ -314,49 +303,26 @@ class Objects
 
     /**
      * @param SimpleBucketObject[] $objects
-     * @param string $sort
-     * @param bool $sortRev
      *
      * @return SimpleBucketObject[]
      */
-    public function sortObjectsBy($objects, string $sort, bool $sortRev)
+    public function sortObjectsBy(array $objects, string $sort, bool $sortRev)
     {
-        switch ($sort) {
-            case 'size':
-                usort($objects, function ($a, $b) {
-                    return $a->getSize() <=> $b->getSize();
-                });
-                break;
-            case 'fileext':
-                usort($objects, function ($a, $b) {
-                    return
-                        strnatcasecmp(
-                            pathinfo($a->getName(), PATHINFO_EXTENSION),
-                            pathinfo($b->getName(), PATHINFO_EXTENSION)
-                        );
-                });
-                break;
-            case 'tstamp':
-                usort($objects, function ($a, $b) {
-                    return $a->getUpdatedAt() <=> $b->getUpdatedAt();
-                });
-                break;
-            case 'name':
-            case 'file':
-            case 'rw':
-            default:
-                usort($objects, function ($a, $b) {
-                    return strnatcasecmp($a->getName(), $b->getName());
-                });
-        }
+        match ($sort) {
+            'size' => usort($objects, fn (SimpleBucketObject $a, SimpleBucketObject $b): int => $a->getFilesize() <=> $b->getFilesize()),
+            'fileext' => usort($objects, fn ($a, $b): int => strnatcasecmp(
+                pathinfo((string)$a->getName(), PATHINFO_EXTENSION),
+                pathinfo((string)$b->getName(), PATHINFO_EXTENSION),
+            )),
+            'tstamp' => usort($objects, fn ($a, $b): int => $a->getUpdatedAt() <=> $b->getUpdatedAt()),
+            default => usort($objects, fn ($a, $b): int => strnatcasecmp((string)$a->getName(), (string)$b->getName())),
+        };
 
         return $sortRev ? array_reverse($objects) : $objects;
     }
 
-    public function convertSimpleBucketObjectsToArray($objects)
+    public function convertSimpleBucketObjectsToArray($objects): array
     {
-        return array_map(function ($object) {
-            return $object->toArray();
-        }, $objects);
+        return array_map(fn ($object) => $object->toArray(), $objects);
     }
 }

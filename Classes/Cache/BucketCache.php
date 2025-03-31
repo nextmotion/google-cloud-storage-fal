@@ -19,7 +19,7 @@ class BucketCache
 {
     private $data = [];
 
-    public function clear()
+    public function clear(): void
     {
         $this->data = [];
     }
@@ -29,12 +29,12 @@ class BucketCache
         return $this->data[$this->getUniqueKey($signature)];
     }
 
-    public function getUniqueKey($param)
+    public function getUniqueKey($param): string
     {
         return sha1(var_export($param, true));
     }
 
-    public function exists($signature)
+    public function exists($signature): bool
     {
         return isset($this->data[$this->getUniqueKey($signature)]);
     }

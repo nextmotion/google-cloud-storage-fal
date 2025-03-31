@@ -15,37 +15,38 @@ namespace Nextmotion\GoogleCloudStorageDriver\Bucket;
 class SimpleBucketObject
 {
     public const TYPE_FILE = 0;
+
     public const TYPE_FOLDER = 1;
 
     /**
      * @var string full path of file or folder
      */
-    private string $name;
+    private readonly string $name;
 
     /**
      * @var string Determinated content type by google
      */
-    private string $contentType;
+    private readonly string $contentType;
 
     /**
      * @var int Filesize in byte
      */
-    private int $filesize;
+    private readonly int $filesize;
 
     /**
      * @var int Timestamp
      */
-    private int $created_at;
+    private readonly int $created_at;
 
     /**
      * @var int Timestamp
      */
-    private int $updated_at;
+    private readonly int $updated_at;
 
     /**
      * @var int See TYPE_FILE OR TYPE_FOLDER
      */
-    private int $type;
+    private readonly int $type;
 
     /**
      * SimpleBucketObject constructor.
@@ -62,65 +63,44 @@ class SimpleBucketObject
         $updated_at = $config['updated_at'] ?? 0;
 
         $this->name = (string)$name;
-        $this->type = (int) $type;
+        $this->type = (int)$type;
         $this->contentType = (string)$contentType;
         $this->filesize = (int)$filesize;
         $this->created_at = (int)$created_at;
         $this->updated_at = (int)$updated_at;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function getContentType(): string
     {
         return $this->contentType;
     }
 
-    /**
-     * @return int
-     */
     public function getFilesize(): int
     {
-        return (int)$this->filesize;
+        return $this->filesize;
     }
 
-    /**
-     * @return int
-     */
     public function getCreatedAt(): int
     {
         return $this->created_at;
     }
 
-    /**
-     * @return int
-     */
     public function getUpdatedAt(): int
     {
         return $this->updated_at;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getRw()
+    public function getRw(): string
     {
         return 'rw';
     }
@@ -138,17 +118,11 @@ class SimpleBucketObject
         ];
     }
 
-    /**
-     * @return bool
-     */
     public function isFolder(): bool
     {
         return $this->type === self::TYPE_FOLDER;
     }
 
-    /**
-     * @return bool
-     */
     public function isFile(): bool
     {
         return $this->type === self::TYPE_FILE;

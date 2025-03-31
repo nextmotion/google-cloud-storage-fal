@@ -17,15 +17,18 @@ use TYPO3\CMS\Core\Resource\Event\GeneratePublicUrlForResourceEvent;
 
 class GeneratePublicUrlForResourceListener
 {
-    public function __invoke(GeneratePublicUrlForResourceEvent $event): void
+    public function __invoke(GeneratePublicUrlForResourceEvent $generatePublicUrlForResourceEvent): void
     {
-        if (!($event->getDriver() instanceof StorageDriver)) {
+        if (!($generatePublicUrlForResourceEvent->getDriver() instanceof StorageDriver)) {
             return;
         }
-        $identifier = $event->getResource()->getIdentifier();
-        /** @var StorageDriver $driver */
-        $driver     = $event->getDriver();
-        $publicUrl  = $driver->getPublicUrl($identifier);
-        $event->setPublicUrl($publicUrl);
+
+        /** @var non-empty-string $identifier */
+        $identifier = $generatePublicUrlForResourceEvent->getResource()->getIdentifier();
+
+        /** @var StorageDriver $storageDriver */
+        $storageDriver = $generatePublicUrlForResourceEvent->getDriver();
+        $publicUrl = $storageDriver->getPublicUrl($identifier);
+        $generatePublicUrlForResourceEvent->setPublicUrl($publicUrl);
     }
 }

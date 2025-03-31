@@ -25,9 +25,9 @@ class ImageMetaDataExtractor implements ExtractorInterface
     /**
      * Returns an array of supported file types.
      *
-     * @return array
+     * @return array<string>|array{}
      */
-    public function getFileTypeRestrictions()
+    public function getFileTypeRestrictions(): array
     {
         return [];
     }
@@ -36,9 +36,9 @@ class ImageMetaDataExtractor implements ExtractorInterface
      * Get all supported DriverClasses
      * empty array indicates no restrictions.
      *
-     * @return array
+     * @return array<string>
      */
-    public function getDriverRestrictions()
+    public function getDriverRestrictions(): array
     {
         return ['GoogleCloudStorageDriver'];
     }
@@ -48,7 +48,7 @@ class ImageMetaDataExtractor implements ExtractorInterface
      *
      * @return int
      */
-    public function getPriority()
+    public function getPriority(): int
     {
         return 10;
     }
@@ -58,7 +58,7 @@ class ImageMetaDataExtractor implements ExtractorInterface
      *
      * @return int
      */
-    public function getExecutionPriority()
+    public function getExecutionPriority(): int
     {
         return 10;
     }
@@ -66,11 +66,9 @@ class ImageMetaDataExtractor implements ExtractorInterface
     /**
      * Checks if the given file can be processed by this Index.
      *
-     * @param File $file
-     *
      * @return bool
      */
-    public function canProcess(File $file)
+    public function canProcess(File $file): bool
     {
         return $file->isImage();
     }
@@ -79,12 +77,11 @@ class ImageMetaDataExtractor implements ExtractorInterface
      * The actual processing TASK
      * Should return an array with database properties for sys_file_metadata to write.
      *
-     * @param File $file
-     * @param array $previousExtractedData optional, contains the array of already extracted data
+     * @param array<mixed> $previousExtractedData optional, contains the array of already extracted data
      *
-     * @return array
+     * @return array<mixed>
      */
-    public function extractMetaData(File $file, array $previousExtractedData = [])
+    public function extractMetaData(File $file, array $previousExtractedData = []): array
     {
         $metaData = [];
 
