@@ -13,9 +13,7 @@ namespace Nextmotion\GoogleCloudStorageDriver\Bucket;
  */
 
 use Google\Cloud\Storage\Bucket;
-use Google\Cloud\Storage\StorageObject;
 use Nextmotion\GoogleCloudStorageDriver\Cache\BucketCache;
-use function PHPUnit\Framework\isInstanceOf;
 
 /**
  * Class ObjectListing.
@@ -142,7 +140,7 @@ class Objects
         bool $recursive = false,
         bool $includeFiles = true,
         bool $includeFolders = true,
-        false|null $includeItSelf = false
+        ?false $includeItSelf = false,
     ): array {
         if ($this->cache instanceof BucketCache && $this->cache->exists([__FUNCTION__, func_get_args()])) {
             return $this->cache->get([__FUNCTION__, func_get_args()]);

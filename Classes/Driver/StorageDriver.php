@@ -18,6 +18,7 @@ use Google\Cloud\Storage\StorageClient;
 use Google\Cloud\Storage\StorageObject;
 use Helhum\ConfigLoader\Processor\PlaceholderValue;
 use InvalidArgumentException;
+use JsonException;
 use Nextmotion\GoogleCloudStorageDriver\Bucket\NamingHelper;
 use Nextmotion\GoogleCloudStorageDriver\Bucket\Objects;
 use Nextmotion\GoogleCloudStorageDriver\Bucket\Operations;
@@ -74,8 +75,9 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
     private NamingHelper $namingHelper;
 
     /**
-     * Initialize this driver and expose the capabilities for the repository to use
-     * @param array<mixed> $configuration .
+     * Initialize this driver and expose the capabilities for the repository to use.
+     *
+     * @param array<mixed> $configuration
      */
     public function __construct(array $configuration = [])
     {
@@ -89,7 +91,8 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * {@inheritdoc}
-     * @throws \JsonException
+     *
+     * @throws JsonException
      */
     public function processConfiguration(): void
     {
@@ -114,7 +117,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
                     $keyFileContent,
                     true,
                     512,
-                    JSON_THROW_ON_ERROR
+                    JSON_THROW_ON_ERROR,
                 );
             }
             $this->keyFileContent = is_array($jsonDecodedKeyFileContent) ? $jsonDecodedKeyFileContent : null;
@@ -157,6 +160,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
         if ($this->keyFilePath === null) {
             return '';
         }
+
         return defined('TYPO3') ?
             PathUtility::isAbsolutePath($this->keyFilePath)
                 ? $this->keyFilePath
@@ -170,6 +174,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
     public function mergeConfigurationCapabilities(Capabilities $capabilities): Capabilities
     {
         $this->capabilities->and($capabilities);
+
         return $this->capabilities;
     }
 
@@ -196,6 +201,7 @@ class StorageDriver extends AbstractHierarchicalFilesystemDriver
      *
      * @param string $folderIdentifier
      * @param bool $deleteRecursively
+     *
      * @return bool
      */
     public function deleteFolder(string $folderIdentifier, bool $deleteRecursively = false): bool

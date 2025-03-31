@@ -2,9 +2,9 @@
 
 use Nextmotion\GoogleCloudStorageDriver\Driver\StorageDriver;
 use Nextmotion\GoogleCloudStorageDriver\Index\ImageMetaDataExtractor;
+use TYPO3\CMS\Core\Resource\Driver\DriverRegistry;
 use TYPO3\CMS\Core\Resource\Index\ExtractorRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Resource\Driver\DriverRegistry;
 
 if (!defined('TYPO3')) {
     exit('Access denied.');
