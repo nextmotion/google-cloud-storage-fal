@@ -1,7 +1,9 @@
 <?php
 
+use Nextmotion\GoogleCloudStorageDriver\Command\MoveFilesBetweenStorages;
+
 return [
     'googlecloudstorage:move' => [
-        'class' => \Nextmotion\GoogleCloudStorageDriver\Command\MoveFilesBetweenStorages::class,
+        'class' => MoveFilesBetweenStorages::class,
     ],
 ];

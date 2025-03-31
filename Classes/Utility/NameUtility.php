@@ -14,7 +14,7 @@ namespace Nextmotion\GoogleCloudStorageDriver\Utility;
 
 class NameUtility
 {
-    private $dirDelimiter = '/';
+    private string $dirDelimiter = '/';
 
     /**
      * Normalize directory strings.
@@ -29,7 +29,7 @@ class NameUtility
      *
      * @return string Empty string for root| diretories with a trailing slash
      */
-    public function normalizeFolderName($folderName)
+    public function normalizeFolderName($folderName): string
     {
         $folderName = trim($folderName, $this->dirDelimiter);
         if ($folderName === '.' || $folderName === '') {
@@ -48,10 +48,8 @@ class NameUtility
      * '/abc/def'  to 'abc/def'
      *
      * @param string $fileName
-     *
-     * @return string
      */
-    public function normalizeFileName($fileName)
+    public function normalizeFileName($fileName): string
     {
         return trim($fileName, $this->dirDelimiter);
     }

@@ -1,4 +1,5 @@
 [![Latest Stable Version](http://poser.pugx.org/nextmotion/google-cloud-storage-fal/v)](https://extensions.typo3.org/extension/google_cloud_storage_fal)
+[![TYPO3 13](https://img.shields.io/badge/TYPO3-13-orange.svg)](https://get.typo3.org/version/13)
 [![TYPO3 12](https://img.shields.io/badge/TYPO3-12-orange.svg)](https://get.typo3.org/version/12)
 [![TYPO3 11](https://img.shields.io/badge/TYPO3-11-orange.svg)](https://get.typo3.org/version/11)
 [![TYPO3 10](https://img.shields.io/badge/TYPO3-10-orange.svg)](https://get.typo3.org/version/10)
@@ -105,9 +106,16 @@ If you are trying to develop a cloud-native TYPO3, it makes a lot of sense to st
 
 Use CLI command `googlecloudstorage:move` to move files from existing storage and keep references.
 
+TYPO3 Version < 12:
 ```
 vendor/bin/typo3cms googlecloudstorage:move 1 2
 ```
+
+TYPO3 Version >= 12:
+```
+vendor/bin/typo3 googlecloudstorage:move 1 2
+```
+
 Usually `1` is the local file storage and in this example `2` is the Google Cloud Storage bucket.
 
 1. This command read every record in sys_file table with the source storage id (`1`). (Before you start please make sure, that all files are indexed. You can use the planer task "File Abstraction Layer: Update storage index".) 
@@ -117,12 +125,12 @@ Usually `1` is the local file storage and in this example `2` is the Google Clou
 5. Deletes the file in source storage (`1`).
 
 After finishing the command you must clear the processed_files with the module "Maintenance >
-Remove Temporary Assets > Scan temporary files > Delete files in _proccessed_".
+Remove Temporary Assets > Scan temporary files > Delete files in _processed_".
 
 *Note: Due technical limitations the created and modified date will set to the current timestamp.*
 
 ```
-vendor/bin/typo3cms googlecloudstorage:move [-f|--force [FORCE]] [--filter FILTER] [--limit LIMIT] [--exclude EXCLUDE] [--] <source> <target>
+vendor/bin/typo3 googlecloudstorage:move [-f|--force [FORCE]] [--filter FILTER] [--limit LIMIT] [--exclude EXCLUDE] [--] <source> <target>
 
 Usage:
   googlecloudstorage:move [options] [--] <source> <target>
@@ -150,14 +158,15 @@ Options:
 
 # Requirements & compatibility
 
-| EXT:google-cloud-storage-fal version | TYPO3 support | PHP support    |
-|--------------------------------------|---------------|----------------|
-| `>= 2.0`                             | `12`          | `>=8.1`        |
-| `>= 1.0`                             | `10`, `11`    | `>=7.1, <8.3`  |
+| EXT:google-cloud-storage-fal version | TYPO3 support | PHP support   |
+|--------------------------------------|---------------|---------------|
+| `>= 3.0`                             | `13`          | `>=8.2`       |
+| `>= 2.0`                             | `12`          | `>=8.1`       |
+| `>= 1.0`                             | `10`, `11`    | `>=7.1, <8.3` |
 
 # Known issues
 
-* Google doesn't support directories because it is a flat filesystem like a key value storage. Directories are simulate in GCS trough empty files with trailing a slash (e.g. "`images/`"). This driver support both: The driver shows the simulated directories. If a simulated parent directory to a file is missing, the driver fakes the existing virtual directory. As a result its good to keep in mind: if you delete the last file in `images/`, e.g. `images/product.jpg`, and there is no parent virtual directory, the parent directory will also disappear from the file list. 
+* Google doesn't support directories because it is a flat filesystem like a key value storage. Directories are simulate in GCS trough empty files with trailing a slash (e.g. "`images/`"). This driver support both: The driver shows the simulated directories. If a simulated parent directory to a file is missing, the driver fakes the existing virtual directory. As a result its good to keep in mind: if you delete the last file in `images/`, e.g. `images/product.jpg`, and there is no parent virtual directory, the parent directory will also disappear from the file list.
 
 # Credits
 

@@ -17,11 +17,8 @@ namespace Nextmotion\GoogleCloudStorageDriver\Bucket;
  */
 class NamingHelper
 {
-    private $dirDelimiter = '/';
+    private string $dirDelimiter = '/';
 
-    /**
-     * @return string
-     */
     public function getDirDelimiter(): string
     {
         return $this->dirDelimiter;
@@ -40,7 +37,7 @@ class NamingHelper
      *
      * @return string Empty string for root| diretories with a trailing slash
      */
-    public function normalizeFolderName($folderName)
+    public function normalizeFolderName($folderName): string
     {
         $folderName = trim($folderName, $this->dirDelimiter);
         if ($folderName === '.' || $folderName === '') {
@@ -59,10 +56,8 @@ class NamingHelper
      * '/abc/def'  to 'abc/def'
      *
      * @param string|null $fileName
-     *
-     * @return string
      */
-    public function normalizeFileName($fileName)
+    public function normalizeFileName($fileName): string
     {
         return trim((string)$fileName, $this->dirDelimiter);
     }
